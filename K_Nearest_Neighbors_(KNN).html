@@ -371,6 +371,8 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#langkah-langkah-deteksi-outlier-dengan-knn">2. Langkah-Langkah Deteksi Outlier dengan KNN</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kesimpulan">Kesimpulan</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pisah-data">Pisah Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#menghitung-akurasi-dari-data"><strong>Menghitung Akurasi dari data</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-data"><strong>Visualisasi Data</strong></a></li>
 </ul>
             </nav>
         </div>
@@ -1172,6 +1174,9 @@ Data tidak outlier :
 <p>Kode ini bertujuan untuk mengambil data dari dua database berbeda, yaitu PostgreSQL dan MySQL, kemudian menggabungkannya berdasarkan kolom id dan class, serta mendeteksi outlier menggunakan algoritma Local Outlier Factor (LOF) dari scikit-learn. Pertama, kode mengimpor berbagai pustaka seperti psycopg2 dan pymysql untuk koneksi ke database, serta pandas, numpy, dan matplotlib untuk manipulasi dan visualisasi data. Fungsi get_pg_data() dan get_mysql_data() digunakan untuk mengambil data dari masing-masing database dengan menjalankan query SELECT * dan mengubah hasilnya menjadi DataFrame pandas sebelum akhirnya digabung menggunakan metode inner join agar hanya data dengan id dan class yang cocok disertakan.</p>
 <p>Setelah itu, kode mengekstrak fitur numerik seperti petal_length, petal_width, sepal_length, dan sepal_width untuk digunakan dalam deteksi outlier. Model Local Outlier Factor (LOF) diterapkan dengan parameter n_neighbors=90, yang berarti model melihat 90 tetangga terdekat untuk menentukan apakah suatu data adalah outlier atau bukan. Hasil prediksi LOF kemudian ditambahkan ke dalam DataFrame dalam kolom “outlier_label”, di mana nilai 1 menandakan data normal dan -1 menandakan data sebagai outlier.</p>
 <p>Setelah mendeteksi outlier, kode menghitung dan mencetak jumlah outlier yang terdeteksi serta memisahkan data menjadi dua bagian: data normal (non-outlier) dan data outlier. Data yang terdeteksi sebagai outlier dihapus, lalu jumlah data yang tersisa setelah proses pembersihan ditampilkan. Proses ini membantu memastikan bahwa data yang akan digunakan dalam analisis atau model machine learning lebih bersih dan bebas dari anomali, serta memastikan integrasi data dari dua sumber berbeda tetap konsisten.</p>
+</section>
+<section id="menghitung-akurasi-dari-data">
+<h2><strong>Menghitung Akurasi dari data</strong><a class="headerlink" href="#menghitung-akurasi-dari-data" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">df_merged</span><span class="p">[</span><span class="n">feature_columns</span><span class="p">]</span>
@@ -1253,6 +1258,267 @@ Iris-versicolor       1.00      0.71      0.83         7
 <p>Selanjutnya, data dibagi menjadi training (80%) dan testing (20%), baik untuk dataset yang mengandung outlier maupun yang sudah dibersihkan. Model KNN kemudian dibuat dalam bentuk pipeline, yang mencakup StandardScaler() untuk menstandarkan data dan KNeighborsClassifier(n_neighbors=11) untuk klasifikasi berdasarkan 11 tetangga terdekat. Model pertama kali dilatih dengan data yang mengandung outlier, lalu diuji untuk menghasilkan prediksi dan menghitung akurasinya menggunakan accuracy_score(). Classification report juga ditampilkan untuk melihat metrik evaluasi lainnya. Setelah itu, model dilatih kembali menggunakan data tanpa outlier, lalu diuji dengan cara yang sama untuk membandingkan akurasinya dengan model sebelumnya.</p>
 <p>Hasil dari kedua model ini memungkinkan analisis apakah menghapus outlier meningkatkan performa klasifikasi atau tidak. Jika akurasi meningkat setelah outlier dihapus, maka keberadaan outlier memang mempengaruhi hasil prediksi secara negatif. Namun, jika akurasi tetap sama atau bahkan menurun, berarti outlier tidak terlalu berpengaruh pada model KNN yang digunakan. Dengan demikian, kode ini membantu dalam memahami dampak outlier terhadap model prediktif dan menunjukkan pentingnya pra-pemrosesan data sebelum pelatihan model machine learning.</p>
 </section>
+<section id="visualisasi-data">
+<h2><strong>Visualisasi Data</strong><a class="headerlink" href="#visualisasi-data" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KNeighborsClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span><span class="p">,</span> <span class="n">LabelEncoder</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">classification_report</span>
+<span class="kn">from</span> <span class="nn">sklearn.inspection</span> <span class="kn">import</span> <span class="n">DecisionBoundaryDisplay</span>
+
+<span class="c1"># Ambil dua fitur utama untuk visualisasi decision boundary</span>
+<span class="n">feature_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df_cleaned</span><span class="p">[</span><span class="n">feature_columns</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df_cleaned</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span>
+
+<span class="c1"># Encode label kelas ke numerik</span>
+<span class="n">label_encoder</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+<span class="n">y_encoded</span> <span class="o">=</span> <span class="n">label_encoder</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>  <span class="c1"># Ubah nama kelas jadi angka</span>
+
+<span class="c1"># Membagi data menjadi training (80%) dan testing (20%)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y_encoded</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Pipeline dengan KNN dan StandardScaler</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
+    <span class="p">(</span><span class="s2">&quot;scaler&quot;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+    <span class="p">(</span><span class="s2">&quot;knn&quot;</span><span class="p">,</span> <span class="n">KNeighborsClassifier</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">11</span><span class="p">))</span>
+<span class="p">])</span>
+
+<span class="c1"># Pelatihan model KNN</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># Evaluasi model</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Akurasi: </span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">target_names</span><span class="o">=</span><span class="n">label_encoder</span><span class="o">.</span><span class="n">classes_</span><span class="p">))</span>
+
+<span class="c1"># Visualisasi Decision Boundary</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">weights</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axs</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;distance&quot;</span><span class="p">)):</span>
+    <span class="n">clf</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">knn__weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">disp</span> <span class="o">=</span> <span class="n">DecisionBoundaryDisplay</span><span class="o">.</span><span class="n">from_estimator</span><span class="p">(</span>
+        <span class="n">clf</span><span class="p">,</span>
+        <span class="n">X_test</span><span class="p">,</span>
+        <span class="n">response_method</span><span class="o">=</span><span class="s2">&quot;predict&quot;</span><span class="p">,</span>
+        <span class="n">plot_method</span><span class="o">=</span><span class="s2">&quot;pcolormesh&quot;</span><span class="p">,</span>
+        <span class="n">xlabel</span><span class="o">=</span><span class="n">feature_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">ylabel</span><span class="o">=</span><span class="n">feature_columns</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">shading</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">scatter</span> <span class="o">=</span> <span class="n">disp</span><span class="o">.</span><span class="n">ax_</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+        <span class="n">X_train</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X_train</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="n">c</span><span class="o">=</span><span class="n">y_train</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span>
+    <span class="p">)</span>
+    <span class="n">disp</span><span class="o">.</span><span class="n">ax_</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
+        <span class="n">scatter</span><span class="o">.</span><span class="n">legend_elements</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">label_encoder</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span>
+        <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower left&quot;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Classes&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">disp</span><span class="o">.</span><span class="n">ax_</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;3-Class classification</span><span class="se">\n</span><span class="s2">(k=</span><span class="si">{</span><span class="n">clf</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">n_neighbors</span><span class="si">}</span><span class="s2">, weights=</span><span class="si">{</span><span class="n">weights</span><span class="si">!r}</span><span class="s2">)&quot;</span>
+    <span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Akurasi: 0.9629629629629629
+                 precision    recall  f1-score   support
+
+    Iris-setosa       1.00      1.00      1.00        12
+Iris-versicolor       1.00      0.86      0.92         7
+ Iris-virginica       0.89      1.00      0.94         8
+
+       accuracy                           0.96        27
+      macro avg       0.96      0.95      0.95        27
+   weighted avg       0.97      0.96      0.96        27
+</pre></div>
+</div>
+<img alt="_images/c27122a6c3bef6573bef7a15205ed7f436df6eaf248261a1db5035b8a4ba6d7b.png" src="_images/c27122a6c3bef6573bef7a15205ed7f436df6eaf248261a1db5035b8a4ba6d7b.png" />
+</div>
+</div>
+<p>Kode ini bertujuan untuk membangun model klasifikasi menggunakan K-Nearest Neighbors (KNN) dengan dua fitur utama (petal_length dan petal_width) dan memvisualisasikan decision boundary dari model yang telah dilatih. Pertama, dataset df_cleaned dipilih dengan hanya menggunakan dua fitur tersebut sebagai variabel X, sementara kolom y berisi label kelas yang kemudian dikonversi ke format numerik menggunakan LabelEncoder(). Selanjutnya, data dibagi menjadi training (80%) dan testing (20%) menggunakan train_test_split() dengan random_state=42 untuk memastikan reprodusibilitas hasil.</p>
+<p>Model KNN kemudian dibuat menggunakan pipeline yang mencakup StandardScaler() untuk menormalkan data dan KNeighborsClassifier(n_neighbors=11) sebagai algoritma klasifikasi. Model ini dilatih pada data training menggunakan clf.fit(X_train, y_train), lalu diuji pada data testing dengan menghitung akurasi serta menampilkan classification report yang menunjukkan metrik evaluasi lainnya seperti precision, recall, dan f1-score.</p>
+<p>Bagian terakhir kode bertujuan untuk memvisualisasikan decision boundary dari model KNN. Dua subplot dibuat dengan plt.subplots(ncols=2, figsize=(12, 5)), di mana setiap subplot menampilkan decision boundary untuk dua jenis bobot berbeda dalam KNN: “uniform” (semua tetangga memiliki bobot sama) dan “distance” (tetangga yang lebih dekat memiliki bobot lebih tinggi). DecisionBoundaryDisplay.from_estimator() digunakan untuk menampilkan peta klasifikasi berdasarkan hasil prediksi model. Selain itu, scatter plot ditambahkan untuk memvisualisasikan data training yang sebenarnya, dengan warna berbeda untuk setiap kelas menggunakan colormap “viridis”. Terakhir, plt.show() digunakan untuk menampilkan hasil visualisasi, yang memberikan gambaran bagaimana model membagi ruang fitur berdasarkan label kelas.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">import</span> <span class="nn">pymysql</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">LocalOutlierFactor</span><span class="p">,</span> <span class="n">KNeighborsClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span><span class="p">,</span> <span class="n">LabelEncoder</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">classification_report</span>
+<span class="kn">from</span> <span class="nn">sklearn.inspection</span> <span class="kn">import</span> <span class="n">DecisionBoundaryDisplay</span>
+
+
+<span class="c1"># Ambil dua fitur utama untuk visualisasi decision boundary</span>
+<span class="n">feature_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df_merged</span><span class="p">[</span><span class="n">feature_columns</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df_merged</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span>
+
+<span class="c1"># Encode label kelas ke numerik</span>
+<span class="n">label_encoder</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+<span class="n">y_encoded</span> <span class="o">=</span> <span class="n">label_encoder</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>  <span class="c1"># Mengubah nama kelas menjadi angka</span>
+
+<span class="c1"># Menerapkan LOF untuk deteksi outlier</span>
+<span class="n">lof</span> <span class="o">=</span> <span class="n">LocalOutlierFactor</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">contamination</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">outlier_labels</span> <span class="o">=</span> <span class="n">lof</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">df_merged</span><span class="p">[</span><span class="s2">&quot;outlier&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">outlier_labels</span>
+
+<span class="c1"># Menghapus data yang terdeteksi sebagai outlier</span>
+<span class="n">df_cleaned</span> <span class="o">=</span> <span class="n">df_merged</span><span class="p">[</span><span class="n">df_merged</span><span class="p">[</span><span class="s2">&quot;outlier&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;outlier&quot;</span><span class="p">])</span>
+
+<span class="c1"># Membagi data menjadi training (80%) dan testing (20%)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">df_cleaned</span><span class="p">[</span><span class="n">feature_columns</span><span class="p">],</span>
+    <span class="n">label_encoder</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">df_cleaned</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]),</span>  <span class="c1"># Pastikan target dalam bentuk numerik</span>
+    <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Pipeline dengan KNN dan StandardScaler</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
+    <span class="p">(</span><span class="s2">&quot;scaler&quot;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+    <span class="p">(</span><span class="s2">&quot;knn&quot;</span><span class="p">,</span> <span class="n">KNeighborsClassifier</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">11</span><span class="p">))</span>
+<span class="p">])</span>
+
+<span class="c1"># Pelatihan model KNN</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># Evaluasi model</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Akurasi: </span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">target_names</span><span class="o">=</span><span class="n">label_encoder</span><span class="o">.</span><span class="n">classes_</span><span class="p">))</span>
+
+<span class="c1"># Visualisasi Decision Boundary</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">weights</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axs</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;distance&quot;</span><span class="p">)):</span>
+    <span class="n">clf</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">knn__weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">disp</span> <span class="o">=</span> <span class="n">DecisionBoundaryDisplay</span><span class="o">.</span><span class="n">from_estimator</span><span class="p">(</span>
+        <span class="n">clf</span><span class="p">,</span>
+        <span class="n">X_test</span><span class="p">,</span>
+        <span class="n">response_method</span><span class="o">=</span><span class="s2">&quot;predict&quot;</span><span class="p">,</span>
+        <span class="n">plot_method</span><span class="o">=</span><span class="s2">&quot;pcolormesh&quot;</span><span class="p">,</span>
+        <span class="n">xlabel</span><span class="o">=</span><span class="n">feature_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">ylabel</span><span class="o">=</span><span class="n">feature_columns</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">shading</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">scatter</span> <span class="o">=</span> <span class="n">disp</span><span class="o">.</span><span class="n">ax_</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+        <span class="n">X_train</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X_train</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="n">c</span><span class="o">=</span><span class="n">y_train</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span>
+    <span class="p">)</span>
+    <span class="n">disp</span><span class="o">.</span><span class="n">ax_</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
+        <span class="n">scatter</span><span class="o">.</span><span class="n">legend_elements</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">label_encoder</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span>
+        <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower left&quot;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Classes&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">disp</span><span class="o">.</span><span class="n">ax_</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;3-Class classification</span><span class="se">\n</span><span class="s2">(k=</span><span class="si">{</span><span class="n">clf</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">n_neighbors</span><span class="si">}</span><span class="s2">, weights=</span><span class="si">{</span><span class="n">weights</span><span class="si">!r}</span><span class="s2">)&quot;</span>
+    <span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Akurasi: 0.8148148148148148
+                 precision    recall  f1-score   support
+
+    Iris-setosa       1.00      1.00      1.00        12
+Iris-versicolor       0.62      0.71      0.67         7
+ Iris-virginica       0.71      0.62      0.67         8
+
+       accuracy                           0.81        27
+      macro avg       0.78      0.78      0.78        27
+   weighted avg       0.82      0.81      0.81        27
+</pre></div>
+</div>
+<img alt="_images/e47bb03224aaddb2bdf3903f341e7685854fd5c9ee94e0ccaf9f296ba6841ddc.png" src="_images/e47bb03224aaddb2bdf3903f341e7685854fd5c9ee94e0ccaf9f296ba6841ddc.png" />
+</div>
+</div>
+<p>Kode ini bertujuan untuk mendeteksi outlier, melatih model K-Nearest Neighbors (KNN), dan memvisualisasikan decision boundary menggunakan dua fitur utama (petal_length dan petal_width). Pertama, data diambil dari dataset df_merged dan hanya dua fitur utama yang digunakan sebagai variabel X, sementara kolom class digunakan sebagai label y, yang kemudian dikonversi ke format numerik menggunakan LabelEncoder(). Setelah itu, Local Outlier Factor (LOF) diterapkan dengan n_neighbors=20 dan contamination=0.1 untuk mendeteksi sekitar 10% data sebagai outlier. Label outlier (-1 untuk outlier dan 1 untuk data normal) ditambahkan ke dataset, lalu data outlier dihapus sehingga hanya data normal yang digunakan dalam pelatihan model.</p>
+<p>Data yang telah dibersihkan dibagi menjadi training (80%) dan testing (20%) menggunakan train_test_split(), dengan target label tetap dalam format numerik. Model KNN kemudian dibuat menggunakan pipeline yang mencakup StandardScaler() untuk menormalkan data dan KNeighborsClassifier(n_neighbors=11) untuk klasifikasi berdasarkan 11 tetangga terdekat. Model dilatih dengan clf.fit(X_train, y_train), kemudian diuji dengan menghitung akurasi dan menampilkan classification report, yang mencakup metrik evaluasi seperti precision, recall, dan f1-score.</p>
+<p>Bagian terakhir kode digunakan untuk memvisualisasikan decision boundary dengan dua jenis bobot berbeda dalam KNN: “uniform” (semua tetangga memiliki bobot yang sama) dan “distance” (tetangga yang lebih dekat memiliki bobot lebih tinggi). DecisionBoundaryDisplay.from_estimator() digunakan untuk menampilkan peta klasifikasi berdasarkan hasil prediksi model, sementara scatter plot ditambahkan untuk memvisualisasikan data training menggunakan warna berbeda untuk setiap kelas dengan colormap “viridis”. Legenda juga disertakan untuk menunjukkan kelas yang berbeda, dan plt.show() digunakan untuk menampilkan hasil visualisasi. Dengan demikian, kode ini membantu memahami bagaimana model KNN bekerja setelah pembersihan outlier serta bagaimana decision boundary terbentuk dalam klasifikasi tiga kelas.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Pilih dua fitur untuk scatter plot</span>
+<span class="n">x_feature</span> <span class="o">=</span> <span class="s2">&quot;petal_length&quot;</span>
+<span class="n">y_feature</span> <span class="o">=</span> <span class="s2">&quot;petal_width&quot;</span>
+
+<span class="c1"># Warna berdasarkan kelas</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Iris-setosa&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;Iris-versicolor&quot;</span><span class="p">:</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;Iris-virginica&quot;</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">}</span>
+<span class="n">df_cleaned</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_cleaned</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
+
+<span class="c1"># Plot scatter dengan ukuran (s) dan warna (c)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">df_cleaned</span><span class="p">[</span><span class="n">x_feature</span><span class="p">],</span> <span class="n">df_cleaned</span><span class="p">[</span><span class="n">y_feature</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">df_cleaned</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">x_feature</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">y_feature</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Scatter Plot dengan Warna Berdasarkan Class&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/6b0e43fcbbc09f2e4e3378ad3ac5ff8e03ba23521d38e74f1050352d3b6f3a90.png" src="_images/6b0e43fcbbc09f2e4e3378ad3ac5ff8e03ba23521d38e74f1050352d3b6f3a90.png" />
+</div>
+</div>
+<p>Kode ini digunakan untuk membuat scatter plot yang memvisualisasikan distribusi data berdasarkan dua fitur utama, yaitu petal_length dan petal_width, serta mewarnai titik-titik berdasarkan kelas bunga iris. Pertama, variabel x_feature dan y_feature didefinisikan untuk menentukan fitur yang akan diplot pada sumbu x dan y. Selanjutnya, dibuat dictionary colors yang memetakan setiap kelas bunga (Iris-setosa, Iris-versicolor, dan Iris-virginica) ke warna tertentu (blue, green, dan red). Warna untuk setiap data dalam dataset df_cleaned kemudian ditambahkan sebagai kolom baru “color” menggunakan fungsi .map().</p>
+<p>Plot scatter dibuat menggunakan plt.scatter(), di mana nilai petal_length digunakan sebagai sumbu x, sedangkan petal_width sebagai sumbu y. Parameter s=50 menentukan ukuran titik, c=df_cleaned[“color”] menetapkan warna titik sesuai dengan kelasnya, alpha=0.7 memberikan efek transparansi untuk mencegah tumpang tindih yang berlebihan, dan edgecolors=”k” memberi garis tepi hitam pada setiap titik agar lebih terlihat. Label sumbu x dan y diberikan menggunakan plt.xlabel() dan plt.ylabel(), sedangkan judul plot ditambahkan menggunakan plt.title(). Akhirnya, plt.show() digunakan untuk menampilkan scatter plot, yang memberikan visualisasi hubungan antara panjang dan lebar kelopak bunga dengan pewarnaan berdasarkan kelasnya.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Pilih dua fitur untuk scatter plot</span>
+<span class="n">x_feature</span> <span class="o">=</span> <span class="s2">&quot;sepal_length&quot;</span>
+<span class="n">y_feature</span> <span class="o">=</span> <span class="s2">&quot;sepal_width&quot;</span>
+
+<span class="c1"># Warna berdasarkan kelas</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Iris-setosa&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;Iris-versicolor&quot;</span><span class="p">:</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;Iris-virginica&quot;</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">}</span>
+<span class="n">df_cleaned</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_cleaned</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
+
+<span class="c1"># Plot scatter dengan ukuran (s) dan warna (c)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">df_cleaned</span><span class="p">[</span><span class="n">x_feature</span><span class="p">],</span> <span class="n">df_cleaned</span><span class="p">[</span><span class="n">y_feature</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">df_cleaned</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">x_feature</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">y_feature</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Scatter Plot dengan Warna Berdasarkan Class&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/7aa9b87a9a24d8bfb28ddfe651f0516a651da65d349cf4953e458abf10bd53bd.png" src="_images/7aa9b87a9a24d8bfb28ddfe651f0516a651da65d349cf4953e458abf10bd53bd.png" />
+</div>
+</div>
+<p>Kode ini digunakan untuk membuat scatter plot yang menggambarkan hubungan antara dua fitur, yaitu sepal_length dan sepal_width, dengan pewarnaan berdasarkan kelas bunga iris. Pertama, variabel x_feature dan y_feature didefinisikan untuk menentukan fitur yang akan diplot pada sumbu x dan y. Kemudian, dibuat dictionary colors yang memetakan setiap kelas bunga (Iris-setosa, Iris-versicolor, dan Iris-virginica) ke warna tertentu (blue, green, dan red). Warna ini ditambahkan ke dataset df_cleaned dalam kolom “color” menggunakan fungsi .map() untuk mencocokkan setiap baris dengan warna yang sesuai berdasarkan kelasnya.</p>
+<p>Scatter plot dibuat menggunakan plt.scatter(), di mana nilai sepal_length digunakan sebagai sumbu x, sedangkan sepal_width sebagai sumbu y. Parameter s=50 menentukan ukuran titik, c=df_cleaned[“color”] menetapkan warna titik sesuai dengan kelasnya, alpha=0.7 memberikan efek transparansi agar titik-titik yang berdekatan tetap terlihat, dan edgecolors=”k” memberi garis tepi hitam pada setiap titik agar lebih jelas. Label sumbu x dan y diberikan menggunakan plt.xlabel() dan plt.ylabel(), sedangkan judul scatter plot ditambahkan menggunakan plt.title(). Akhirnya, plt.show() digunakan untuk menampilkan visualisasi, yang memungkinkan analisis hubungan antara panjang dan lebar sepal dengan distribusi warna berdasarkan kelas bunga iris.</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1324,6 +1590,8 @@ Iris-versicolor       1.00      0.71      0.83         7
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#langkah-langkah-deteksi-outlier-dengan-knn">2. Langkah-Langkah Deteksi Outlier dengan KNN</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kesimpulan">Kesimpulan</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pisah-data">Pisah Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#menghitung-akurasi-dari-data"><strong>Menghitung Akurasi dari data</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-data"><strong>Visualisasi Data</strong></a></li>
 </ul>
   </nav></div>
 
