@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>&lt;no title&gt; &#8212; Penambangan Data</title>
+    <title>Analisis Kesehatan Lansia Berdasarkan National Poll on Healthy Aging (NPHA) &#8212; Penambangan Data</title>
   
   
   
@@ -167,7 +167,7 @@
                 </a>
             </li>
         </ul>
-        <ul class="nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="PendatE_DataUnderstanding_23_204.html">Understanding Data</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="Outlier_Deteksi.html"><strong>Outlier Deteksi</strong></a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="K_Nearest_Neighbors_%28KNN%29.html"><strong>Deteksi Outlier dengan K-Nearest Neighbors (KNN) dalam Data Understanding</strong></a></li>
@@ -179,6 +179,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Fuzzy_CMeans.html"><strong>FUZZY C-MEANS</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="DecisionTree.html">Decision Tree</a></li>
 <li class="toctree-l1"><a class="reference internal" href="YAPPINGBinnings.html">Teknik Binning</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Analisis Kesehatan Lansia Berdasarkan National Poll on Healthy Aging (NPHA)</a></li>
 </ul>
 
     </div>
@@ -361,7 +362,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1><no title></h1>
+    <h1>Analisis Kesehatan Lansia Berdasarkan National Poll on Healthy Aging (NPHA)</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -370,9 +371,9 @@
                 <h2> Contents </h2>
             </div>
             <nav aria-label="Page">
-                <ul class="simple visible nav section-nav flex-column">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pendahuluan">Pendahuluan</a></li>
 </ul>
-
             </nav>
         </div>
     </div>
@@ -383,9 +384,11 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <p>#Analisis Kesehatan Lansia Berdasarkan National Poll on Healthy Aging (NPHA)</p>
-<p>##Pendahuluan
-Kesehatan lansia merupakan isu penting yang semakin mendapatkan perhatian seiring meningkatnya jumlah penduduk usia lanjut di banyak negara, termasuk Amerika Serikat. Lansia menghadapi berbagai tantangan kesehatan fisik, mental, dan sosial yang memerlukan perhatian khusus dari penyedia layanan kesehatan, pembuat kebijakan, dan masyarakat luas.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="analisis-kesehatan-lansia-berdasarkan-national-poll-on-healthy-aging-npha">
+<h1>Analisis Kesehatan Lansia Berdasarkan National Poll on Healthy Aging (NPHA)<a class="headerlink" href="#analisis-kesehatan-lansia-berdasarkan-national-poll-on-healthy-aging-npha" title="Link to this heading">#</a></h1>
+<section id="pendahuluan">
+<h2>Pendahuluan<a class="headerlink" href="#pendahuluan" title="Link to this heading">#</a></h2>
+<p>Kesehatan lansia merupakan isu penting yang semakin mendapatkan perhatian seiring meningkatnya jumlah penduduk usia lanjut di banyak negara, termasuk Amerika Serikat. Lansia menghadapi berbagai tantangan kesehatan fisik, mental, dan sosial yang memerlukan perhatian khusus dari penyedia layanan kesehatan, pembuat kebijakan, dan masyarakat luas.</p>
 <p>Untuk mendukung pengambilan kebijakan dan intervensi yang berbasis data, survei dan polling menjadi salah satu cara untuk memperoleh wawasan langsung dari populasi lansia. Salah satu sumber data yang kredibel dan kaya informasi adalah National Poll on Healthy Aging (NPHA) yang dilakukan oleh University of Michigan. Survei ini menyajikan opini dan pengalaman orang dewasa berusia 50 hingga 80 tahun terkait berbagai isu kesehatan.</p>
 <p>#Data Understanding</p>
 <p>#Sumber Data
@@ -415,13 +418,8 @@ untuk mengambil data agar dapat diolah, perlu untuk menginstall package yang tel
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting ucimlrepo
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Downloading ucimlrepo-0.0.7-py3-none-any.whl.metadata (5.5 kB)
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: pandas&gt;=1.0.0 in /home/codespace/.local/lib/python3.12/site-packages (from ucimlrepo) (2.2.3)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: ucimlrepo in /usr/local/python/3.12.1/lib/python3.12/site-packages (0.0.7)
+Requirement already satisfied: pandas&gt;=1.0.0 in /home/codespace/.local/lib/python3.12/site-packages (from ucimlrepo) (2.2.3)
 Requirement already satisfied: certifi&gt;=2020.12.5 in /home/codespace/.local/lib/python3.12/site-packages (from ucimlrepo) (2024.8.30)
 </pre></div>
 </div>
@@ -430,11 +428,6 @@ Requirement already satisfied: python-dateutil&gt;=2.8.2 in /home/codespace/.loc
 Requirement already satisfied: pytz&gt;=2020.1 in /home/codespace/.local/lib/python3.12/site-packages (from pandas&gt;=1.0.0-&gt;ucimlrepo) (2024.2)
 Requirement already satisfied: tzdata&gt;=2022.7 in /home/codespace/.local/lib/python3.12/site-packages (from pandas&gt;=1.0.0-&gt;ucimlrepo) (2024.2)
 Requirement already satisfied: six&gt;=1.5 in /home/codespace/.local/lib/python3.12/site-packages (from python-dateutil&gt;=2.8.2-&gt;pandas&gt;=1.0.0-&gt;ucimlrepo) (1.17.0)
-Downloading ucimlrepo-0.0.7-py3-none-any.whl (8.0 kB)
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Installing collected packages: ucimlrepo
-Successfully installed ucimlrepo-0.0.7
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold">[</span><span class=" -Color -Color-Blue">notice</span><span class=" -Color -Color-Bold">]</span> A new release of pip is available: <span class=" -Color -Color-Red">24.3.1</span> -&gt; <span class=" -Color -Color-Green">25.1.1</span>
@@ -858,7 +851,7 @@ None
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_3622/3780610019.py:6: FutureWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipykernel_6770/3780610019.py:6: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
@@ -894,6 +887,8 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 </div>
 <p>#Struktur Dataset</p>
 <p>##Fitur dan Label</p>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -950,9 +945,9 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
     <i class="fa-solid fa-list"></i> Contents
   </div>
   <nav class="bd-toc-nav page-toc">
-    <ul class="simple visible nav section-nav flex-column">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pendahuluan">Pendahuluan</a></li>
 </ul>
-
   </nav></div>
 
 </div></div>
